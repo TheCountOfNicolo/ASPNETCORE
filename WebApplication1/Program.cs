@@ -1,16 +1,33 @@
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
+app.MapGet("/fruit", () => Fruit.All);
 
-List<Person> list = new List<Person>{
-    new("Max","Alex"),
-    new("Bonny","Clide"),
-    new("Boris","Barbaris"),
-    new("Elena","Carl"),
-    new("Avalon","Asteroid"),
-    new("Arkhimed","Asterix")
-};
-
-app.MapGet("/person{name}", (string name) => list.Where(p => p.firstName.StartsWith(name)));
+var getFruit = (string id) => Fruit.All[id];
+app.MapGet("/fruit{id}", getFruit);
+app.MapPost("/fruit{id}", Handlers.AddFruit);
+Handlers handlers = new();
+app.MapPut("fruit{id}", handlers.ReplaceFruit);
+app.MapDelete("/fruit{id}", DeleteFruit);
 app.Run();
 
-public record Person(string firstName, string secondName);
+void DeleteFruit(string id)
+{
+    Fruit.All.Remove(id);
+}
+
+record Fruit(string Name, int Stock)
+{
+    public static readonly Dictionary<string, Fruit> All = new();
+}
+
+class Handlers
+{
+    public void ReplaceFruit(string id, Fruit fruit)
+    {
+        Fruit.All[id] = fruit;
+    }
+    public static void AddFruit(string id, Fruit fruit)
+    {
+        Fruit.All.Add(id, fruit);
+    }
+}
