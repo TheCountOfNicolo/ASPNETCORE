@@ -3,11 +3,11 @@ var app = builder.Build();
 app.MapGet("/fruit", () => Fruit.All);
 
 var getFruit = (string id) => Fruit.All[id];
-app.MapGet("/fruit{id}", getFruit);
-app.MapPost("/fruit{id}", Handlers.AddFruit);
+app.MapGet("/fruit/{id}", getFruit);
+app.MapPost("/fruit/{id}", Handlers.AddFruit);
 Handlers handlers = new();
-app.MapPut("fruit{id}", handlers.ReplaceFruit);
-app.MapDelete("/fruit{id}", DeleteFruit);
+app.MapPut("fruit/{id}", handlers.ReplaceFruit);
+app.MapDelete("/fruit/{id}", DeleteFruit);
 app.Run();
 
 void DeleteFruit(string id)
